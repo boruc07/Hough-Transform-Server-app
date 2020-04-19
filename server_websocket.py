@@ -4,6 +4,8 @@ import base64
 import os
 import cv2
 import numpy as np
+import asyncio
+import ipaddress
 
 def rotateImage(image, angle):
     image_center = tuple(np.array(image.shape[1::-1]) / 2)
@@ -13,12 +15,13 @@ def rotateImage(image, angle):
 
 class MyServerProtocol(WebSocketServerProtocol):
    i = 0
-   x = 8
+   x = 8   
    def onConnect(self, request):
-      print("Client connecting: {0}".format(request.peer))
+      print("Client connecting: {0}".format(request.peer))      
 
    def onOpen(self):
       print("WebSocket connection open.")
+      print(self.transport.getHost())
 
    def onMessage(self, payload, isBinary):
       MyServerProtocol.i = MyServerProtocol.i+1
@@ -79,12 +82,32 @@ if __name__ == '__main__':
 
    import sys
    from twisted.python import log
-   from twisted.internet import reactor
-
+   from twisted.internet import reactor,endpoints
+   ip = '77.55.193.84'
+   #ip = '127.0.0.1'
+   port = '9000'
    log.startLogging(sys.stdout)
+   
+   
 
-   factory = WebSocketServerFactory("ws://192.168.0.107:9000")#192.168.56.1
+   factory = WebSocketServerFactory('ws://' + ip + ':' + port)
    factory.protocol = MyServerProtocol
-
-   reactor.listenTCP(9000, factory)
+   #factory = endpoints.serverFromString(reactor, b"tcp:9000:interface=192.168.100.18")
+   #fingerEndpoint.listen((FingerFactory({ b'moshez' : b'Happy and well'})))
+   
+   reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
+   log.msg("listening on", "{0}:{1}".format(ip, port))
    reactor.run()
+   # factory = WebSocketServerFactory("ws://127.0.0.1:9000")
+   # factory.protocol = MyServerProtocol
+
+   # loop = asyncio.get_event_loop()
+   # coro = loop.create_server(factory, '0.0.0.0', 9000)
+   # server = loop.run_until_complete(coro)
+   # try:
+   #     loop.run_forever()
+   # except KeyboardInterrupt:
+   #     pass
+   # finally:
+   #     server.close()
+   #     loop.close()
