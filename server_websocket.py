@@ -94,20 +94,10 @@ if __name__ == '__main__':
    factory.protocol = MyServerProtocol
    #factory = endpoints.serverFromString(reactor, b"tcp:9000:interface=192.168.100.18")
    #fingerEndpoint.listen((FingerFactory({ b'moshez' : b'Happy and well'})))
-   
-   reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
+   with open("/var/www/webserver/code/keys/ssl.localhost.key") as keyFile:
+    with open("/var/www/webserver/code/keys/ssl.localhost.cert") as certFile:
+      cert = ssl.PrivateCertificate.loadPEM(keyFile.read() + certFile.read())
+      reactor.listenSSL(int(port), factory, cert.options())
+   #reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
    log.msg("listening on", "{0}:{1}".format(ip, port))
-   reactor.run()
-   # factory = WebSocketServerFactory("ws://127.0.0.1:9000")
-   # factory.protocol = MyServerProtocol
-
-   # loop = asyncio.get_event_loop()
-   # coro = loop.create_server(factory, '0.0.0.0', 9000)
-   # server = loop.run_until_complete(coro)
-   # try:
-   #     loop.run_forever()
-   # except KeyboardInterrupt:
-   #     pass
-   # finally:
-   #     server.close()
-   #     loop.close()
+   reactor.run()  
