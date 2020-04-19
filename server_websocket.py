@@ -31,17 +31,17 @@ class MyServerProtocol(WebSocketServerProtocol):
       else:
             print("Text message received, saving to a file")
             # decode the image and save locally
-            path = "D:\Dokumenty/testy/serwer/image_received{}.png".format(MyServerProtocol.i)
+            path = "/var/www/webserver/code/image_received{}.png".format(MyServerProtocol.i)
             with open(path, "wb") as image_file:
                 image_file.write(base64.b64decode(payload.decode().split('base64,')[1]))
       if (MyServerProtocol.i == 2):
           print("I am calculating x = {} and i = {}".format(MyServerProtocol.x,MyServerProtocol.i))
-          img_rgb = cv2.imread("D:\Dokumenty/testy/serwer/image_received2.png")
+          img_rgb = cv2.imread("/var/www/webserver/code/image_received2.png")
          
           for n in range(MyServerProtocol.x):
                 MyServerProtocol.i = (360 / MyServerProtocol.x) * n  
                 img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-                template = cv2.imread("D:\Dokumenty/testy/serwer/image_received1.png",0)
+                template = cv2.imread("/var/www/webserver/code/image_received1.png",0)
                 template = rotateImage(template, MyServerProtocol.i)
                 w, h = template.shape[::-1]
 
@@ -54,7 +54,7 @@ class MyServerProtocol(WebSocketServerProtocol):
                 #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
                 #path = "D:\Dokumenty/testy/odbiorca/acumulators/acc{}.png".format(i)
                 #cv2.imwrite(path,res)
-                img_rgb = cv2.imread("D:\Dokumenty/testy/serwer/res.png")
+                img_rgb = cv2.imread("/var/www/webserver/code/res.png")
                 txt = "Wykonano {}".format((n+1)/MyServerProtocol.x * 100) 
                 to_send = round((n+1)/MyServerProtocol.x * 100)
                 txt = "{}".format(to_send)
@@ -65,7 +65,7 @@ class MyServerProtocol(WebSocketServerProtocol):
           #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
           #cv2.imwrite("D:\Dokumenty/testy/serwer/acc.png",res)
           #Sending final image
-          filename = "D:\Dokumenty/testy/serwer/res.png"
+          filename = "/var/www/webserver/code/res.png"
           size = os.path.getsize(filename)
           file = open(filename , 'rb')
           file_data = file.read(size)  
