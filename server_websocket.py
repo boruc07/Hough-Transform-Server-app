@@ -50,7 +50,7 @@ class MyServerProtocol(WebSocketServerProtocol):
                 loc = np.where( res >= threshold)
                 for pt in zip(*loc[::-1]):
                     cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
-                cv2.imwrite("D:\Dokumenty/testy/serwer/res.png",img_rgb)
+                cv2.imwrite("/var/www/webserver/code/res.png",img_rgb)
                 #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
                 #path = "D:\Dokumenty/testy/odbiorca/acumulators/acc{}.png".format(i)
                 #cv2.imwrite(path,res)
