@@ -15,9 +15,7 @@ def rotateImage(image, angle):
 
 class MyServerProtocol(WebSocketServerProtocol):
    i = 0
-   x = 24  
-   pt0_last = -1
-   pt1_last = -1 
+   x = 24
    def onConnect(self, request):
       print("Client connecting: {0}".format(request.peer))      
 
@@ -39,22 +37,22 @@ class MyServerProtocol(WebSocketServerProtocol):
       if (MyServerProtocol.i == 2):
           print("I am calculating x = {} and i = {}".format(MyServerProtocol.x,MyServerProtocol.i))
           img_rgb = cv2.imread("/var/www/webserver/code/image_received2.png")
-         
+          img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)          
+          pattern = cv2.imread("/var/www/webserver/code/image_received1.png",0)
+          x_max, y_max = img_gray.shape[::-1]
+          acc = np.ones_like(img_gray[::])
           for n in range(MyServerProtocol.x):
-                MyServerProtocol.i = (360 / MyServerProtocol.x) * n  
-                img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)
-                template = cv2.imread("/var/www/webserver/code/image_received1.png",0)
-                template = rotateImage(template, MyServerProtocol.i)
+                MyServerProtocol.i = (360 / MyServerProtocol.x) * n
+                template = rotateImage(pattern, MyServerProtocol.i)
                 w, h = template.shape[::-1]
-
                 res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
-                threshold = 0.92
+                threshold = 0.80
                 loc = np.where( res >= threshold)
                 for pt in zip(*loc[::-1]):
-                     if abs(pt[1] - MyServerProtocol.pt1_last) > w or  abs(pt[0] - MyServerProtocol.pt0_last) > h:
+                     if acc[pt[0],pt[1]] == 1:
                         cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
-                        MyServerProtocol.pt0_last = pt[0]
-                        MyServerProtocol.pt1_last = pt[1]
+                        cv2.rectangle(res, (pt[0]-w,pt[1]-h), (pt[0] + w, pt[1] + h), (-1,-1,-1), -1)
+                        acc[max(pt[0]-w,0):min(pt[0]+w,x_max),max(pt[1]-h,0):min(pt[1]+h,y_max)] = 0
                 cv2.imwrite("/var/www/webserver/code/res.png",img_rgb)
                 #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
                 #path = "D:\Dokumenty/testy/odbiorca/acumulators/acc{}.png".format(i)
