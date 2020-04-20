@@ -48,10 +48,10 @@ class MyServerProtocol(WebSocketServerProtocol):
                 w, h = template.shape[::-1]
 
                 res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
-                threshold = 0.90
+                threshold = 0.92
                 loc = np.where( res >= threshold)
                 for pt in zip(*loc[::-1]):
-                     if abs(pt[1] - MyServerProtocol.pt1_last) > 10 and  abs(pt[0] - MyServerProtocol.pt0_last) > 10:
+                     if abs(pt[1] - MyServerProtocol.pt1_last) > w or  abs(pt[0] - MyServerProtocol.pt0_last) > h:
                         cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
                         MyServerProtocol.pt0_last = pt[0]
                         MyServerProtocol.pt1_last = pt[1]
