@@ -15,7 +15,9 @@ def rotateImage(image, angle):
 
 class MyServerProtocol(WebSocketServerProtocol):
    i = 0
-   x = 8   
+   x = 8  
+   pt0_last = -1
+   pt1_last = -1 
    def onConnect(self, request):
       print("Client connecting: {0}".format(request.peer))      
 
@@ -49,7 +51,10 @@ class MyServerProtocol(WebSocketServerProtocol):
                 threshold = 0.85
                 loc = np.where( res >= threshold)
                 for pt in zip(*loc[::-1]):
-                    cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
+                     if abs(pt[1] - MyServerProtocol.pt1_last) > 10 and  abs(pt[0] - MyServerProtocol.pt0_last) > 10:
+                        cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
+                        MyServerProtocol.pt0_last = pt[0]
+                        MyServerProtocol.pt1_last = pt[1]
                 cv2.imwrite("/var/www/webserver/code/res.png",img_rgb)
                 #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
                 #path = "D:\Dokumenty/testy/odbiorca/acumulators/acc{}.png".format(i)
@@ -94,10 +99,8 @@ if __name__ == '__main__':
    factory.protocol = MyServerProtocol
    #factory = endpoints.serverFromString(reactor, b"tcp:9000:interface=192.168.100.18")
    #fingerEndpoint.listen((FingerFactory({ b'moshez' : b'Happy and well'})))
-   with open("/var/www/webserver/code/keys/ssl.localhost.key") as keyFile:
-    with open("/var/www/webserver/code/keys/ssl.localhost.cert") as certFile:
-      cert = ssl.PrivateCertificate.loadPEM(keyFile.read() + certFile.read())
-      reactor.listenSSL(int(port), factory, cert.options())
+  reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
    #reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
    log.msg("listening on", "{0}:{1}".format(ip, port))
-   reactor.run()  
+   reactor.run()
+   
