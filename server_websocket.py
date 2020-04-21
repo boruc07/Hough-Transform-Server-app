@@ -41,12 +41,19 @@ class MyServerProtocol(WebSocketServerProtocol):
           pattern = cv2.imread("/var/www/webserver/code/image_received1.png",0)
           x_max, y_max = img_gray.shape[::-1]
           acc = np.ones_like(img_gray[::])
+          mask = np.zeros_like(pattern[::])
+          x, y = mask.shape[::-1]
+          r = min(x,y)/2
+          for i in range(x):
+              for j in range(y):
+                  if (i-r-0.5)**2+(j-r-0.5)**2 < r**2:
+                      mask[i][j] = 1 
           for n in range(MyServerProtocol.x):
                MyServerProtocol.i = (360 / MyServerProtocol.x) * n
                template = rotateImage(pattern, MyServerProtocol.i)
                w, h = template.shape[::-1]
-               res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED)
-               threshold = 0.80
+               res = cv2.matchTemplate(img_gray,template,cv2.TM_CCOEFF_NORMED,mask)
+               threshold = 0.85
                loc = np.where( res >= threshold)
                for pt in zip(*loc[::-1]):
                   if acc[pt[0],pt[1]] == 1:
