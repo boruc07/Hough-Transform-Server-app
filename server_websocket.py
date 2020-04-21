@@ -59,7 +59,7 @@ class MyServerProtocol(WebSocketServerProtocol):
                   if acc[pt[0],pt[1]] == 1:
                      cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
                      cv2.rectangle(res, (pt[0]-w,pt[1]-h), (pt[0] + w, pt[1] + h), (-1,-1,-1), -1)
-                     acc[max(pt[0]-w,0):min(pt[0]+w,x_max),max(pt[1]-h,0):min(pt[1]+h,y_max)] = 0
+                     acc[max(pt[0]-int(w/2),0):min(pt[0]+int(w/2),x_max),max(pt[1]-int(h/2),0):min(pt[1]+int(h/2),y_max)] = 0
                cv2.imwrite("/var/www/webserver/code/res.png",img_rgb)
                #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
                #path = "D:\Dokumenty/testy/odbiorca/acumulators/acc{}.png".format(i)
