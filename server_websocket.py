@@ -44,10 +44,10 @@ class MyServerProtocol(WebSocketServerProtocol):
           mask = np.zeros_like(pattern[::])
           x, y = mask.shape[::-1]
           r = min(x,y)/2
-          for i in range(x-1):
-              for j in range(y-1):
+          for i in range(x):
+              for j in range(y):
                   if (i-r-0.5)**2+(j-r-0.5)**2 < r**2:
-                     mask[i][j] = 1 
+                     mask[j][i] = 1 
           for n in range(MyServerProtocol.x):
                MyServerProtocol.i = (360 / MyServerProtocol.x) * n
                template = rotateImage(pattern, MyServerProtocol.i)
