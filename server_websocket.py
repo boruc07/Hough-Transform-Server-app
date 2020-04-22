@@ -35,6 +35,7 @@ class MyServerProtocol(WebSocketServerProtocol):
             with open(path, "wb") as image_file:
                image_file.write(base64.b64decode(payload.decode().split('base64,')[1]))
       if (MyServerProtocol.i == 2):
+          pattern_count = 0
           print("I am calculating x = {} and i = {}".format(MyServerProtocol.x,MyServerProtocol.i))
           img_rgb = cv2.imread("/var/www/webserver/code/image_received2.png")
           img_gray = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2GRAY)          
@@ -60,6 +61,7 @@ class MyServerProtocol(WebSocketServerProtocol):
                      cv2.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 1)
                      cv2.rectangle(res, (pt[0]-w,pt[1]-h), (pt[0] + w, pt[1] + h), (-1,-1,-1), -1)
                      acc[max(pt[0]-int(w/2),0):min(pt[0]+int(w/2),x_max),max(pt[1]-int(h/2),0):min(pt[1]+int(h/2),y_max)] = 0
+                     pattern_count = pattern_count + 1
                cv2.imwrite("/var/www/webserver/code/res.png",img_rgb)
                #res = cv2.normalize(res,  res, 0, 255, cv2.NORM_MINMAX)
                #path = "D:\Dokumenty/testy/odbiorca/acumulators/acc{}.png".format(i)
@@ -80,6 +82,7 @@ class MyServerProtocol(WebSocketServerProtocol):
           file = open(filename , 'rb')
           file_data = file.read(size)  
           self.sendMessage(("data:image/png;base64," + base64.b64encode(file_data).decode()).encode(), isBinary= False)
+          self.sendMessage(str(pattern_count).encode())
           MyServerProtocol.i = 0
      
 
