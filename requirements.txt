@@ -27,7 +27,7 @@ pyparsing==2.4.6
 python-dateutil==2.8.1
 six==1.14.0
 stevedore==1.32.0
-Twisted==19.10.0
+Twisted==22.2.0
 txaio==20.1.1
 typed-ast==1.4.1
 typing-extensions==3.7.4.1
