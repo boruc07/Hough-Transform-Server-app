@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Pattern Matcher
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Server connection</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Host:
+      <ion-input [value]="host" (input)="setHost($event.target.value)"></ion-input>
+      Port:
+      <ion-input type="number" [value]="port" (input)="setPort($event.target.value)"></ion-input>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Files</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      Source:
+      <input type="file" (change)="setSource($event.target.files[0])">
+      <br><br>
+      Pattern:
+      <input type="file" (change)="setPattern($event.target.files[0])">
+    </ion-card-content>
+  </ion-card>
+  <div style="display: flex;justify-content:center;align-items:center;">
+    <ion-button size="large" (click)="send()" [disabled]="!source || !pattern">
+      <ion-icon name="log-in"></ion-icon>
+      Send
+    </ion-button>
+  </div>
+</ion-content>

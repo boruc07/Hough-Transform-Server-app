@@ -96,14 +96,10 @@ if __name__ == '__main__':
    from twisted.python import log
    from twisted.internet import reactor,endpoints
    ip = '77.55.193.84'
-   #ip = '127.0.0.1'
    port = '9000'
    log.startLogging(sys.stdout) 
    factory = WebSocketServerFactory('ws://' + ip + ':' + port)
    factory.protocol = MyServerProtocol
-   #factory = endpoints.serverFromString(reactor, b"tcp:9000:interface=192.168.100.18")
-   #fingerEndpoint.listen((FingerFactory({ b'moshez' : b'Happy and well'})))
-   reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
-   #reactor.listenTCP(int(port), factory)#, interface = ip)#127.0.0.1
+   reactor.listenTCP(int(port), factory)
    log.msg("listening on", "{0}:{1}".format(ip, port))
    reactor.run()

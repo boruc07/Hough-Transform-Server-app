@@ -1,0 +1,19 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Pattern Matcher
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div style="display: flex;justify-content:center;align-items:center;">
+    <img [src]="service.getImage()" style="width: 95vw; height: auto;">
+  </div>
+  <br>
+  <div style="display: flex;justify-content:center;align-items:center;">
+    <ion-button size="large" [routerLink]="['']">
+      <ion-icon name="exit"></ion-icon>
+      Return
+    </ion-button>
+  </div>
+</ion-content>
